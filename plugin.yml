@@ -1,0 +1,88 @@
+name: EnchantmentManagement
+main: io.github.SkywolfDragon.EnchManagerPlugin
+version: 2.0.0
+api-version: 1.16
+author: SkywolfDragon
+description: it adds a way to interact with enchantments through blocks
+softdepend: [Vault]
+commands:
+   enchmanagementconfig:
+      description: The command for configuring the enchantment management plugin, use /enchmanagement help for more detailed instructions.
+      usage: 
+           /enchmanagement help  ||  reload  ||  save  ||  info [section] <setting> [subsetting]  ||  get <section> <setting> [subsetting]  ||  set <section> <setting> [subsetting] <value>  ||  remove <section> <setting> <enchantment>
+      permission: enchmanagement.commands.management
+   enchmanagementgroups:
+      description: The command for configuring the enchantment management plugin, use /enchgroups help for more detailed instructions.
+      usage:
+           /enchmanagementgroups help  ||  reload  ||  save  ||  list  ||  get | unset <group> <setting> [subsetting]  ||  set <group> [setting] [subsetting] <value>  ||  create|remove <group>
+      permission: enchmanagement.commands.groups
+   enchmanagementcost:
+      description: The command tells the player the costs for adding/transfering/removing enchantments of the items held in their hands.
+      usage: 
+           /enchmanagementcost help [subcommand] | groups | add | transfer | remove
+      aliases:
+          - enchcost
+          - enchprice
+          - enchmanagementprice
+
+permissions:
+    enchmanagement:
+        desc: Root permission. Gives all non-costgroup permissions to the player.
+        default: op
+        children:
+            enchmanagement.*: true
+
+    enchmanagement.*:
+        desc: Gives all the other non-costgroup permissions to the player.
+        children:
+            enchmanagement.commands: true
+
+    enchmanagement.commands:
+        desc: Allows the player to execute the /enchmanagement and /enchcost command.
+        command: /enchmanagement
+        children:
+            enchmanagement.commands.*: true
+
+    enchmanagement.commands.*:
+        desc: Allows the player to execute the /enchmanagement and /enchcost command.
+        command: /enchmanagement
+        children:
+            enchmanagement.commands.management: true
+            enchmanagement.commands.groups: true
+            enchmanagement.commands.cost: true
+            
+    enchmanagement.commands.management:
+        default: op
+        desc: Allows the player to execute the /enchmanagement command.
+            
+    enchmanagement.commands.groups:
+        default: op
+        desc: Allows the player to execute the /enchgroups command.
+    
+    enchmanagement.commands.cost:
+        desc: Allows the player to execute the /enchcost command.
+
+    enchmanagement.use:
+        desc: Allows the player to use all the active features in the plugin.
+        children:
+            enchmanagement.use.*: true
+    enchmanagement.use.*:
+        desc: Allows the player to use all the active features in the plugin.
+        children:
+            enchmanagement.use.add: true
+            enchmanagement.use.transfer: true
+            enchmanagement.use.remove: true
+
+    enchmanagement.use.add:
+        desc: Allows the player to use this plugin to add enchantments if the feature is enabled.
+    enchmanagement.use.transfer:
+        desc: Allows the player to use this plugin to transfer enchantments if the feature is enabled.
+    enchmanagement.use.remove:
+        desc: Allows the player to use this plugin to remove enchantments if the feature is enabled.
+
+
+    enchmanagement.costgroup:
+        desc: Parent permission for all the cost groups. (not actually, if it was it would cause Problems)
+        default: false
+
+        

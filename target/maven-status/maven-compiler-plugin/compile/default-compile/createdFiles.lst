@@ -1,0 +1,15 @@
+io\github\SkywolfDragon\eventHandlers\GroupsCommandHandler.class
+io\github\SkywolfDragon\enchWorkers\EnchResult.class
+io\github\SkywolfDragon\EnchManagerPlugin.class
+io\github\SkywolfDragon\enchWorkers\EnchAdder.class
+io\github\SkywolfDragon\fileHelpers\ConfigHelper.class
+io\github\SkywolfDragon\enchWorkers\EnchRemover.class
+io\github\SkywolfDragon\enchWorkers\PayHelper.class
+io\github\SkywolfDragon\fileHelpers\PermissionGroup.class
+io\github\SkywolfDragon\eventHandlers\CostCommandHandler.class
+io\github\SkywolfDragon\enchWorkers\EnchTransferer.class
+io\github\SkywolfDragon\enchWorkers\EnchHelper.class
+io\github\SkywolfDragon\eventHandlers\ClickHandler.class
+io\github\SkywolfDragon\fileHelpers\GroupsHelper.class
+io\github\SkywolfDragon\fileHelpers\CostBundle.class
+io\github\SkywolfDragon\eventHandlers\ManageCommandHandler.class

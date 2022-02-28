@@ -1,0 +1,238 @@
+feature_active:
+    #if all of these are false, the plugin is pointless
+    add: true
+        #whether the add enchantment feature is usable, if false this feature will be completely disabled
+    transfer: true
+        #whether the transfer enchantment feature is usable, if false this feature will be completely disabled
+    remove: true
+        #whether the remove enchantment feature is usable, if false this feature will be completely disabled
+
+
+costs:
+    #costs can be negative, that gives experience instead of taking away, negative multipliers will act funky, negative adders will substract
+    #the formula for the total cost of an item is: (cost+(cost_adder*numberOfEnchantments))*(cost_multiplier^numberOfEnchantments) where numberOfEnchantments depends on cost_scaling_per_enchantment_level
+    use_money_instead_of_xp: false
+        #if money should be used instead of xp, requires Vault and an economy plugin to be installed, will fall back to xp if either isn't found
+    add:
+        cost: 64.0
+            #xp needed to add an enchantment
+        cost_multiplier: 1.1
+            #the multiplier that gets applied to the cost for each enchantment and level already in the item, setting it to 1.0 means the cost for enchanting won't change no matter how many enchantments there are on the item
+        cost_adder: 0.0
+            #how much gets added to the total cost for each enchantment and level that the item already has, set to 0.0 to disable this type of scaling
+        scaling_per_enchantment_level: true
+            #when true the adder/multiplier gets applied once per enchantment level for all the enchantments the item has, when false it gets applied once for every different enchantment
+
+    transfer:
+        cost: 16.0
+            #xp needed to transfer an enchantment
+        cost_multiplier: 1.0
+            #the multiplier that gets applied to the cost for each enchantment and level in the destination item, if transfer_counts_source_too is true it also counts the source, set to 1.0 to disable this type of scaling
+        cost_adder: 0.5
+            #how much gets added to the total cost for each enchantment and level in the destination item, if transfer_counts_source_too is true it also counts the source, set to 0.0 to disable this type of scaling
+        scaling_per_enchantment_level: true
+            #when true the adder/multiplier gets applied once per enchantment level for all the enchantments the item has, when false it gets applied once for every different enchantment
+
+    remove:
+        cost: -4.0
+            #xp needed to remove an enchantment
+        cost_multiplier: 1.0
+            #the multiplier that gets applied to the cost for each enchantment and level in the item, doesn't count the enchantment to be removed so that the cost set is applied exact if there's only one enchantment to remove, set to 1.0 to disable this type of scaling
+        cost_adder: 0.0
+            #how much gets added to the total cost for each enchantment and level that the item has, doesn't count the enchantment to be removed, set to 0.0 to disable this type of scaling
+        scaling_per_enchantment_level: false
+            #when true the adder/multiplier gets applied once per enchantment level for all the enchantments the item has, when false it gets applied once for every different enchantment
+
+
+interaction:
+    use_permissions: false
+        #when true the following permissions will be checked:
+            #enchantmentmanagement.commands.cost for using /enchcost
+            #enchantmentmanagement.use.add for using the add feature
+            #enchantmentmanagement.use.transfer for using the transfer feature
+            #enchantmentmanagement.use.remove for using the remove feature
+            #enchantmentmanagement.use (or enchantmentmanagement.use.*) can be used to give all the use permissions
+        #all other permissions are always checked
+        #when false, these permissions aren't checked
+    tell_player: true
+        #when this is true, a player will be notified of the result of their interaction with this plugin
+        #set to false if you wanna keep everything ~m~y~s~t~e~r~i~o~u~s~
+        #not used for command outputs, those are safe
+    click_common: true
+        #when true you use the plugin by activating the common block(the one below), when false you use the block on top of the common
+        #if set to false, it's recommended you set the cancel_interactions
+    main_hand_only: false
+        #whether this plugin should check the off hand for all (except transfer) operations
+        #when false, the plugin looks for an item in the main hand, then the off hand, when true only the main hand will be checked
+        #could help prevent accidental enchanting/disenchanting
+    creative_free_enchantments: false
+        #if operations are free of cost whilst the player's gamemode is creative, useful for fine-tuning weights and the such
+    blocks:
+        #all of the settings in this section accept bukkit materials
+        common: DIAMOND_BLOCK
+            #the blocck that goes below the other blocks in order for the plugin to know it's Interaction Time
+        add: ENCHANTING_TABLE
+            #the block that sits on top of the common block for adding enchantments to the item in the player's main or off hand
+        transfer: ANVIL
+            #the block that sits on top of the common block for transfering enchantments from the item in the player's main hand to the item in the player's off hand
+            #if activated with only one item, it will shuffle the enchantments on it for free (if the transfer feature is active)
+        remove: GRINDSTONE
+            #the block that sits on top of the common block for removing enchantments from the item in the player's main or off hand
+    smart_enchantment_rolls: true
+        #this makes it so that only valid enchantments for the item are in the pool of options to randomly pick from
+        #disabling it might improve performance, but it will lead to the add feature being much less reliable
+    dumb_roll_tries: 16
+        #this value is only used when smart_enchantment_rolls is false
+        #it dictates the amount of times a random enchantment will be rolled before giving up
+        #if a valid enchantment isn't found before this limit is reached, the add operation will fail
+        #higher values lead to the add feature being more reliable when smart_enchantment_rolls is false, but will affect performance
+    enchantment_add_weights:
+        #this section assigns a weight to each enchantment, it must also have a default field
+        #a weight determines the chance an enchantment will appear through the add funcionality of this plugin
+        #weights must be integers, but can add up to any number (they're normalized)
+        #negative numbers can be used, they will be turned positive internally.
+        #the default weight is used when an enchantment doesn't have another defined weight
+        #if there's no default in this section, 1 will be assumed as the default
+        #an enchantment with a weight of 0 won't be added with the add functionality, but can be transferred
+        #a 0 in the default means all enchantments not otherwise defined won't be added, but can be transferred
+        default: 1
+        # ^This is necessary.
+
+        #the following enchantments are from version 1.16.5, written down for your convenience
+        #there doesn't need to be all enchantments in this section, enchantments that aren't written here will just use the default weight
+        #  durabilty enchantments
+        #minecraft:unbreaking: 1
+        #minecraft:mending: 1
+        #  tool enchantments
+        #minecraft:efficiency: 1
+        #minecraft:silk_touch: 1
+        #minecraft:fortune: 1
+        #  weapon enchantments
+        #minecraft:sharpness: 1
+        #minecraft:looting: 1
+        #minecraft:smite: 1
+        #minecraft:bane_of_arthropods: 1
+        #minecraft:knockback: 1
+        #minecraft:fire_aspect: 1
+        #minecraft:sweeping: 1
+        #  bow enchantments
+        #minecraft:power: 1
+        #minecraft:punch: 1
+        #minecraft:infinity: 1
+        #minecraft:flame: 1
+        #  crossbow enchantments
+        #minecraft:piercing: 1
+        #minecraft:quick_charge: 1
+        #minecraft:multishot: 1
+        #  armor enchantments
+        #minecraft:protection: 1
+        #minecraft:projectile_protection: 1
+        #minecraft:fire_protection: 1
+        #minecraft:feather_falling: 1
+        #minecraft:blast_protection: 1
+        #minecraft:aqua_affinity: 1
+        #minecraft:frost_walker: 1
+        #minecraft:depth_strider: 1
+        #minecraft:soul_speed: 1
+        #minecraft:respiration: 1
+        #minecraft:thorns: 1
+        #  fishing rod enchantments
+        #minecraft:luck_of_the_sea: 1
+        #minecraft:lure: 1
+        #  trident enchantments
+        #minecraft:impaling: 1
+        #minecraft:loyalty: 1
+        #minecraft:riptide: 1
+        #minecraft:channeling: 1
+        #  curses
+        #minecraft:binding_curse: 1
+        #minecraft:vanishing_curse: 1
+
+
+limits:
+    safe_mode: true
+        #only adds or transfers enchantments where compatible in vanilla minecraft (boring), does not check the enchantment's level or enchantment conflicts
+        #for example, sharpness won't be added to a pickaxe if this is true
+    enforce_vanilla_conflicts: true
+        #when true, conflicting enchantments won't be added into the same item (example: silk touch conflicts with fortune), doesn't affect custom_conflicts
+    vanilla_level_limits: true
+        #if the levels of enchantments should be limited to their vanilla minecraft maximum levels (boring)
+        #doesn't affect max_enchantment_levels if the level set in that section is less than vanilla minecraft's
+    prevent_dupe: true
+        #prevents the use of more than one item in a stack when adding, removing, or transfering enchantments
+    one_level_at_a_time: true
+        #when true, enchantments will be removed/transfered one level at a time instead of all levels at once
+        #when false, enchantments will be removed/transfered one whole enchantment, with all its levels, at a time
+
+    max_enchantment_levels:
+        #here you can set the max level for any enchantment, one enchantment per line, this list will be respected even if safe_mode and limit_levels is disabled
+        #setting a max level of 0 will prevent that enchantment from being added or transfered (though not removed)
+        #format => namespace:id: level
+        #example, this will make it so silk touch can't go above level 1 through the use of this plugin:
+        minecraft:silk_touch: 1
+
+    custom_conflicts:
+        #here you can set pairs (or groups) of enchantments that conflict with each other (won't be placed in the same item together), this will be respected even if enforce_vanilla_conflicts is false
+        #the conflicts work both ways, an item with fortune won't be enchanted with silk touch, and an item with silk touch won't be enchanted with fortune
+        minecraft:fortune: minecraft:silk_touch
+        #even groups work both ways, an item with sharpness won't get any of the enchantments listed on it, likewise an item with those enchantments won't get sharpness
+        #but enchantments in groups don't conflict with each other, that is to say an item with smite can get bane of arthropods, but not sharpness
+        minecraft:sharpness:
+            - minecraft:smite
+            - minecraft:bane_of_arthropods
+
+    min_player_levels:
+        #here you can set the minimum experience level for a player to add/transfer/remove an enchantment through this plugin
+        #a positive number means you can only manipulate it AT OR AFTER that level
+        #a negative number means you can only manipulate it BEFORE OR AT that level
+        #a 0 here means the enchantment won't be added/transfered/removed, depending on what subsections the entry has
+        #an entry with just a number and no subsections will count as if that number was in all the subsections (you can't add/transfer/remove until you hit that level)
+        #duplicate entries will be merged, and overriden (which overrides which is dependent on bukkit's yaml parser)
+        #This example makes it so you can't get silk touch until you have 30 xp levels and you can't transfer it until you have 10, but you can remove it at any level
+        minecraft:silk_touch:
+            add: 30
+            transfer: 10
+        #This example makes it so you can't add, transfer or remove mending until you have 60
+        minecraft:mending: 60
+        #This will make it so you can't remove the curse of binding until you are at least level 16, and you can't transfer it until at or after level 8
+        minecraft:binding_curse:
+            transfer: 8
+            remove: 16
+        #This means that you can't remove the curse of vanishing at all, but you can find it at or after level 6, and transfer it at or before level 8
+        minecraft:vanishing_curse:
+            add: 6
+            transfer: -8
+            remove: 0
+
+
+event_cancelling:
+    cancel_interaction:
+        #whether the plugin tries to cancel the normal block interaction in favor of this plugin's
+        #events are canceled if the interaction with this plugin is possible
+        #that is, events are not canceled if the player doesn't have permission or the feature is disabled
+        common: true
+            #when true, the interaction with the common block will be cancelled if the use of a feature is successful, players without permission are ignored, ignores click_common
+        add: false
+            #when true, the interaction with the add block will be cancelled if the use of the add feature is successful, players without permission are ignored, ignores click_common
+        transfer: false
+            #when true, the interaction with the transfer block will be cancelled if the use of the transfer feature is successful, players without permission are ignored, ignores click_common
+        remove: false
+            #when true, the interaction with the remove block will be cancelled if the use of the remove feature is successful, players without permission are ignored, ignores click_common
+
+    force_cancel_interaction:
+        #when any of these are true, it will cancel the interaction when the functional block is on top of the common one, regardless of use ability
+        #events are not canceled if the feature is disabled
+        #a true value here will override the corresponding one in the previous section
+        common: false
+        add: false
+        transfer: false
+        remove: false
+
+    super_ultra_force_cancel_interaction_absolutely_for_sure:
+        #these settings will cancel interactions for the blocks UNDER ALL CIRCUMSTANCES, this includes placing on these blocks (but not shift_placing)
+        #will cancel even if the corresponding feature is disabled, USE WITH CARE
+        #IGNORES DISABLED FEATURES
+        common: false
+        add: false
+        transfer: false
+        remove: false
